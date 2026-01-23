@@ -1,0 +1,60 @@
+server:
+    port: 1072
+
+spring:
+    application:
+        name: excel-rag
+    datasource:
+        url: jdbc:h2:mem:testdb
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
+    h2:
+        console:
+            enabled: true
+            path: /h2-console
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+
+rag:
+    embedding:
+        model: all-minilm-l6-v2-q
+        dimension: 384
+    retrieval:
+        top-k: 5
+        similarity-threshold: 0.6
+    chunk:
+        max-size: 1000
+        overlap: 100
+
+logging:
+    level:
+        root: INFO
+        com.example.excelrag: DEBUG
+
+
+langchain4j:
+    open-ai:
+        chat-model:
+            # langchain4j测试模型
+            api-key: ${LONGCAT_API_KEY}
+            model-name: LongCat-Flash-Chat
+            thinking-model-name: LongCat-Flash-Thinking
+            base-url: https://api.longcat.chat/openai
+            # 请求和响应日志
+            log-requests: true
+            log-responses: true
+    bai-lian:
+        api-key: ${BAI_LIAN_API_KEY}
+        model-name: qwen-plus
+        base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+        # 请求和响应日志
+        log-requests: true
+        log-responses: true
+
