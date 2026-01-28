@@ -8,14 +8,12 @@ import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import io.qdrant.client.QdrantClient;
-import io.qdrant.client.grpc.Collections;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
@@ -33,8 +31,8 @@ public class EmbeddingLangChain4jController {
     @Resource
     private EmbeddingModel embeddingModel;
 
-    @Resource
-    private QdrantClient qdrantClient;
+/*    @Resource
+    private QdrantClient qdrantClient;*/
 
     @Resource
     private EmbeddingStore<TextSegment> embeddingStore;
@@ -59,11 +57,11 @@ public class EmbeddingLangChain4jController {
     // http://localhost:9010/embedding/createCollection
     @GetMapping("/embedding/createCollection")
     public void createCollection() {
-        Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
+        /*Collections.VectorParams vectorParams = Collections.VectorParams.newBuilder()
                 .setDistance(Collections.Distance.Cosine)
                 .setSize(1024)
                 .build();
-        qdrantClient.createCollectionAsync("test-qdrant", vectorParams);
+        qdrantClient.createCollectionAsync("test-qdrant", vectorParams);*/
     }
 
     // 向量数据库新增文本数据

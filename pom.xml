@@ -20,7 +20,7 @@
     <description>基于SpringBoot和LangChain4j的Excel文件RAG检索系统</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <langchain4j.version>1.9.1</langchain4j.version><!-- ✅ 修复为可用版本 -->
         <langchain4j-spring.version>1.9.1-beta17</langchain4j-spring.version><!-- ✅ 修复为可用版本 -->
         <easyexcel.version>3.3.2</easyexcel.version>
@@ -29,6 +29,9 @@
         <lombok.version>1.18.30</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <fastjson.version>1.2.78</fastjson.version>
+        <super-sql.version>1.0.0-M1</super-sql.version>
+        <grpc.version>1.13.0</grpc.version>
+        <jackson.version>2.15.2</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -47,6 +50,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--<dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${grpc.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -89,6 +99,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>4.1.3</version>
         </dependency>
 
         <!-- MyBatis-Plus -->
@@ -194,17 +209,42 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-openai</artifactId>
             <version>1.1.0-M4</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-qdrant</artifactId>
-            <version>${langchain4j-spring.version}</version>
+            <version>1.10.0-beta18</version>
         </dependency>
+        <!-- 向量数据库支持（qdrant） -->
+<!--        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-vector-store-qdrant</artifactId>
+            <version>1.1.0</version>
+        </dependency>-->
+
+
+        <!-- 添加 Chroma -->
+        <!-- Chroma Java 客户端（必需） -->
+        <!--<dependency>
+            <groupId>io.github.amikos-tech</groupId>
+            <artifactId>chromadb-java-client</artifactId>
+            <version>0.1.7</version> &lt;!&ndash; 与 LangChain4j 兼容的版本 &ndash;&gt;
+        </dependency>-->
+        <!--        <dependency>
+                    <groupId>dev.langchain4j</groupId>
+                    <artifactId>langchain4j-chroma</artifactId>
+                    <version>${langchain4j-spring.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.ai</groupId>
+                    <artifactId>spring-ai-starter-vector-store-chroma</artifactId>
+                    <version>1.0.0</version>
+                </dependency>-->
 
 
         <dependency>
@@ -212,6 +252,57 @@
             <artifactId>easyexcel</artifactId>
             <version>${easyexcel.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-experimental-sql</artifactId>
+            <version>1.10.0-beta18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
+        </dependency>
+
+        <!-- JSON Processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- Template Engine (for HTML generation) -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <!--super sql -->
+<!--        <dependency>
+            <groupId>com.aispace.supersql</groupId>
+            <artifactId>super-sql-spring-boot-starter</artifactId>
+            <version>${super-sql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aispace.supersql</groupId>
+            <artifactId>super-sql-mcp-client</artifactId>
+            <version>${super-sql.version}</version>
+        </dependency>-->
+
+
+        <!--<dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter</artifactId>
+            <version>1.0.0-M6.1</version>
+        </dependency>-->
+
     </dependencies>
 
 
@@ -233,8 +324,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>

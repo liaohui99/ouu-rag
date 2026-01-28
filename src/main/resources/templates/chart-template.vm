@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$title</title>
+
+    <!-- Chart.js 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chart-wrapper {
+            width: ${width}px;
+            height: ${height}px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .chart-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-header {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .chart-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .chart-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .chart-body {
+            padding: 30px;
+            height: calc(100% - 80px);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        .chart-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .chart-wrapper {
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                aspect-ratio: 16/9;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="chart-wrapper">
+    <div class="chart-header">
+        <div class="chart-title">$title</div>
+        <div class="chart-subtitle">数据可视化图表</div>
+    </div>
+    <div class="chart-body">
+        <div class="chart-container">
+            <canvas id="chartCanvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="chart-controls">
+    <button class="chart-btn" onclick="downloadChart()">↓</button>
+    <button class="chart-btn" onclick="toggleFullscreen()">⛶</button>
+</div>
+
+<script>
+    // 图表配置
+    const chartConfig = $chartConfigJson;
+
+    // 创建图表
+    const ctx = document.getElementById('chartCanvas').getContext('2d');
+    const chart = new Chart(ctx, chartConfig);
+
+    // 工具函数
+    function downloadChart() {
+        const link = document.createElement('a');
+        link.download = '$title.png';
+        link.href = chart.toBase64Image();
+        link.click();
+    }
+
+    function toggleFullscreen() {
+        const elem = document.querySelector('.chart-wrapper');
+        if (!document.fullscreenElement) {
+            elem.requestFullscreen().catch(err => {
+                console.error(`全屏请求失败: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // 响应式调整
+    window.addEventListener('resize', () => {
+        chart.resize();
+    });
+
+        #if($interactive)
+        // 添加交互提示
+        const canvas = document.getElementById('chartCanvas');
+        canvas.style.cursor = 'crosshair';
+
+        // 悬停效果
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const points = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                canvas.style.cursor = 'pointer';
+            } else {
+                canvas.style.cursor = 'crosshair';
+            }
+        });
+        #end
+</script>
+</body>
+</html>

@@ -4,23 +4,102 @@ server:
 spring:
     application:
         name: excel-rag
+#    datasource:
+#        url: jdbc:h2:mem:testdb
+#        driver-class-name: org.h2.Driver
+#        username: sa
+#        password:
+#    h2:
+#        console:
+#            enabled: true
+#            path: /h2-console
     datasource:
-        url: jdbc:h2:mem:testdb
-        driver-class-name: org.h2.Driver
-        username: sa
-        password:
-    h2:
-        console:
-            enabled: true
-            path: /h2-console
+        url: jdbc:mysql://101.126.13.194:3306/ouu_dev?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useUnicode=true&useSSL=false&allowMultiQueries=true
+        username: root
+        password: z*UoRY#-Lro~nZNJ6q0D
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
     jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
+        database-platform: org.hibernate.dialect.MySQL8Dialect
         hibernate:
             ddl-auto: update
         show-sql: true
         properties:
             hibernate:
                 format_sql: true
+
+
+    ai:
+        dashscope:
+            api-key: ${BAI_LIAN_API_KEY}  # SuperSQL 使用 Spring AI
+            base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+            chat:
+                options:
+                    model: qwen3-max
+                    temperature: 0.5
+            embedding:
+                options:
+                    model: text-embedding-v2 # ✅ 确认模型名称
+        openai:
+            api-key: ${BAI_LIAN_API_KEY}  # SuperSQL 使用 Spring AI
+            base-url: https://dashscope.aliyuncs.com/compatible-mode
+            chat:
+                options:
+                    model: qwen3-max
+                    temperature: 0.5
+            embedding:
+                options:
+                    model: text-embedding-v2 # ✅ 确认模型名称
+        azure:
+            openai:
+                api-key: ${BAI_LIAN_API_KEY} #Azure OpenAi 的key
+                chat:
+                    options:
+                        deployment-name: qwen3-max #Azure OpenAI 的模型部署名称
+                endpoint: https://dashscope.aliyuncs.com/compatible-mode/v1/ #Azure OpenAI的请求地址 例如：https://your-domain.openai.azure.com/
+                embedding:
+                    options:
+                        deployment-name: text-embedding-v4 #Azure OpenAI 的embedding模型部署名称
+        vectorstore:
+#            chroma:
+#                client:
+#                    host: http://127.0.0.1
+#                    port: 8000
+#                collection-name: ouu-rag-test-sql
+#                initialize-schema: true  # 自动创建集合
+#                index-type: HNSW  # 可选：HNSW/FLAT/IVF
+#                distance-type: COSINE_DISTANCE  # 余弦相似度
+#                dimensions: 1536  # 与嵌入模型维度匹配（OpenAI默认1536）
+            qdrant:
+                host: 192.168.111.11
+                port: 6334
+                protocol: grpc  # 明确指定使用gRPC协议
+                #api-key: <qdrant api key>
+                collection-name: ouu-rag-dev-sql
+                use-tls: false
+                initialize-schema: true
+        reranker:
+            enabled: true
+            model: qwen3-rerank
+            baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+            api-key: ${BAI_LIAN_API_KEY}
+
+
+super-sql:
+    # 是否启动时自动全表训练（首次使用建议设为true）
+    init-train: false
+    # 训练范围：ALONE(仅当前schema)/ALL(所有schema)
+    scope: ALONE
+    # 指定需要训练的schema列表
+    schemas:
+        -   schema: worktime_management_dev
+    # SQL生成温度参数（0-1，值越大创造性越强）
+    temperature: 0.5
+
+    # 重排序配置（提升生成质量）
+    reranker:
+        enabled: true
+        model: qwen3-rerank
 
 rag:
     embedding:
@@ -52,9 +131,16 @@ langchain4j:
             log-responses: true
     bai-lian:
         api-key: ${BAI_LIAN_API_KEY}
-        model-name: qwen-plus
+        model-name: qwen3-max
         base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
         # 请求和响应日志
         log-requests: true
         log-responses: true
+
+
+
+
+
+
+
 

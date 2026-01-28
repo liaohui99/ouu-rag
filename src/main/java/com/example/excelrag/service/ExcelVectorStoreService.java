@@ -14,16 +14,16 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore;
-import io.qdrant.client.QdrantClient;
-import io.qdrant.client.QdrantGrpcClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static dev.langchain4j.internal.Utils.randomUUID;
 
 @Slf4j
 @Service
@@ -39,12 +39,17 @@ public class ExcelVectorStoreService implements Serializable {
                 .apiKey(System.getenv("BAI_LIAN_API_KEY"))
                 .modelName("text-embedding-v4")
                 .build();
-        this.embeddingStore = QdrantEmbeddingStore.builder()
+        /*this.embeddingStore = ChromaEmbeddingStore.builder()
+                .baseUrl("http://chroma-server:8000")
+                .collectionName("product-vectors")
+                .timeout(Duration.ofSeconds(30))  // 延长至30秒
+                .build();*/
+        /*this.embeddingStore = ChromaEmbeddingStore.builder()
                 .host("192.168.111.10")
                 .port(6334)  // gRPC端口
                 .collectionName("ouu-rag-test")
                 .client(new QdrantClient(QdrantGrpcClient.newBuilder("192.168.111.11", 6334, false).build()))
-                .build();
+                .build();*/
     }
 
     public ExcelVectorStoreService(EmbeddingModel embeddingModel, EmbeddingStore<TextSegment> embeddingStore) {
